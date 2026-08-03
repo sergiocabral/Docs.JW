@@ -27,6 +27,111 @@
   height: auto;
 }
 
+/* Present source citations as compact, unobtrusive labels or links. */
+.doc .paragraph.source-reference {
+  margin: 0.45rem 0 1.25rem;
+}
+
+.doc .source-reference a,
+.doc .source-reference .source-label {
+  background: #f1f1f1;
+  border-left: 2px solid #a7a7a7;
+  border-radius: 0.2rem;
+  color: #565656;
+  display: inline-block;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  padding: 0.18rem 0.5rem;
+  text-decoration: none;
+}
+
+.doc .source-reference a:hover {
+  background: #e8e8e8;
+  color: #303030;
+  text-decoration: underline;
+}
+
+/* Preserve the indented closing used by letters in the source publication. */
+.doc .letter-closing,
+.doc .letter-signature {
+  margin-left: 40%;
+}
+
+/* Preserve the raised paragraph numbers used throughout the publication. */
+.doc .paragraph-number {
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 0;
+  margin-right: 0.25em;
+  vertical-align: super;
+}
+
+/* Match the restrained, ruled callouts used for pull quotations in WOL. */
+.doc .sidebarblock.pull-quote {
+  margin: 1rem 0;
+}
+
+.doc .sidebarblock.pull-quote > .content {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #a7a7a7;
+  border-radius: 0;
+  border-top: 1px solid #a7a7a7;
+  box-shadow: none;
+  color: #626262;
+  padding: 0.75rem 0 0.75rem 1.5rem;
+}
+
+.doc .sidebarblock.pull-quote .paragraph {
+  margin: 0;
+}
+
+/* WOL presents source requirement lists with parenthesized numbers. */
+.doc .olist.parenthetical-list > ol {
+  counter-reset: parenthetical-item;
+  list-style: none;
+  padding-left: 2.4rem;
+}
+
+.doc .olist.parenthetical-list > ol > li {
+  counter-increment: parenthetical-item;
+  position: relative;
+}
+
+.doc .olist.parenthetical-list > ol > li::before {
+  content: "(" counter(parenthetical-item) ")";
+  left: -2.4rem;
+  position: absolute;
+  width: 2rem;
+}
+
+/* Reproduce the compact hierarchy of the printed subject index. */
+.doc .paragraph.index-note {
+  color: #626262;
+  font-size: 0.92rem;
+  margin-bottom: 1.4rem;
+}
+
+.doc .paragraph.index-term {
+  margin-bottom: 0.15rem;
+  margin-top: 0.9rem;
+}
+
+.doc .paragraph.index-subentry,
+.doc .paragraph.index-see {
+  margin-bottom: 0.1rem;
+  margin-left: 1.5rem;
+  margin-top: 0.1rem;
+}
+
+.doc .paragraph.index-level-2 {
+  margin-left: 3rem;
+}
+
+.doc .paragraph.index-see {
+  color: #626262;
+}
+
 .nav-menu .is-current-page > .nav-link {
   background: #e3e3e3;
   background: color-mix(

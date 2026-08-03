@@ -4,5 +4,8 @@
 # Temporary EPUB image staging
 /asciidoctor/support/epub-images/
 
+# Temporary extraction, comparison, and validation evidence
+/tmp/
+
 # Node.js dependencies installed locally
 /node_modules/

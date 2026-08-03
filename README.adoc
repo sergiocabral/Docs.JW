@@ -27,25 +27,76 @@ A definir.
 
 Este repositório mantém conteúdo em AsciiDoc. Ele funciona como componente Antora e também gera HTML, PDF e EPUB localmente.
 
+== Convenções para repositórios JW
+
+Em listas, tabelas, seletores e blocos de navegação, apresente publicações e
+variações da mais recente para a mais antiga. Aplique a mesma ordem ao
+`README.adoc`, a `modules/ROOT/pages/index.adoc`, a `antora.yml` e a
+`asciidoctor/publication.yml`. Produtos derivados ficam depois das
+publicações-fonte. Apenas análises longitudinais usam a direção antiga → recente
+internamente, porque nesse caso a sequência é parte do raciocínio.
+
+Cada arquivo de navegação registrado em `antora.yml` deve expor exatamente uma
+raiz visível quando o componente for consumido por um aplicativo agregador. Se
+o componente tiver vários grupos de primeiro nível, distribua-os entre arquivos
+`modules/ROOT/nav-<grupo>.adoc` e registre-os separadamente. Isso permite que o
+agregador remova o invólucro técnico de cada árvore e evita repetir o título do
+componente como um nível intermediário. Um repositório com uma única raiz deve
+continuar usando apenas um `nav.adoc`.
+
+As instruções especializadas são mantidas na raiz:
+
+* `AGENTS-JW-PDF-EXTRACTION.md` — extração, reconstrução e validação de PDFs JW;
+* `AGENTS-JWPUB-EXTRACTION.md` — obtenção, execução e validação do conversor de
+  arquivos nativos do JW Library;
+* `AGENTS-JWPUB-IMPORT.md` — reconstrução de documentos e mídias da estrutura
+  JWPUB validada em módulos AsciiDoc;
+* `AGENTS-EDITION-COMPARISON.md` — análise temática e lexical entre edições,
+  executada somente quando solicitada.
+
+Esses arquivos descrevem recursos opcionais. Use as duas instruções JWPUB em
+sequência quando essa for a fonte; não é necessário copiá-las para dentro do
+conteúdo destinado ao leitor. Um repositório pode ter uma única publicação e
+não precisa criar uma análise entre edições.
+
+No `asciidoctor/publication.yml`, faça o título de cada edição JW terminar com
+o identificador formado pelo mnemônico, código de idioma e data exata da
+edição, por exemplo: `Organizados para Fazer a Vontade de Jeová (od-T
+2021-12)`. Use somente a data da própria edição no título; mantenha a sequência
+histórica apresentada pela publicação em `label` e `edition-label`.
+
 == Criar uma publicação
 
 === 1. Atualize a identidade
 
 Edite a tabela e a seção Sobre acima, `modules/ROOT/pages/index.adoc`, `antora.yml` e `antora-playbook.yml`.
 
-Centralize os metadados das publicações em `asciidoctor/publication.yml`:
+Centralize os metadados dos produtos e de suas edições em
+`asciidoctor/publication.yml`:
 
 [source,yaml]
 ----
-author: A definir
-isbn: ''
-
-editions:
-  main:
-    title: Publicação
-    slug: publicacao
-    lang: pt-BR
+publications:
+  book:
+    author: A definir
+    isbn: ''
+    contents: contents.adoc
+    covers:
+      complete: cover-complete.png
+      background: cover-background.png
+      banner: cover-banner.png
+    editions:
+      main:
+        title: Publicação
+        slug: publicacao
+        lang: pt-BR
 ----
+
+A chave `book` identifica o produto principal e aponta para o arquivo que
+ordena seu conteúdo. Cada item de `publications` gera sua própria família de
+arquivos HTML, PDF e EPUB. Isso permite acrescentar, quando solicitado, um
+produto derivado — por exemplo, uma análise entre edições — sem misturá-lo ao
+livro.
 
 A chave `main` é o módulo neutro de uma publicação com uma única variedade. Ela pode ser renomeada quando o repositório reunir variações da mesma publicação:
 
@@ -81,22 +132,49 @@ Nomeie as páginas com quatro dígitos e um slug ASCII. Avance de dez em dez par
 0110-capitulo-02-titulo.adoc
 ----
 
-Registre a navegação em `modules/main/nav.adoc` e a ordem das publicações em `asciidoctor/contents.adoc`:
+Registre a navegação em `modules/main/nav.adoc` e a ordem do produto principal
+em `asciidoctor/contents.adoc`:
 
 [source,asciidoc]
 ----
 \include::../modules/{edition-module}/pages/0100-capitulo-01-titulo.adoc[leveloffset=+1]
 ----
 
-Para várias variedades, crie um módulo e uma entrada em `publication.yml` para cada uma. Preserve os mesmos nomes de página quando os conteúdos forem correspondentes.
+Cada arquivo listado em `antora.yml` deve ter uma única raiz. Quando uma
+navegação agregada precisar de vários grupos, use arquivos
+`modules/ROOT/nav-<grupo>.adoc`; não registre também os `nav.adoc` locais que
+reproduzam as mesmas árvores.
 
-=== 3. Substitua as capas
+Para várias variedades, crie um módulo e uma entrada em `publication.yml` para cada uma. Preserve os mesmos nomes de página quando os conteúdos forem correspondentes e mantenha a variedade mais recente no topo.
 
-Mantenha estes nomes em `modules/ROOT/assets/images/`:
+Produtos derivados usam uma entrada e um arquivo `contents` próprios. Na
+navegação, devem aparecer depois de todas as publicações-fonte e instruções
+complementares. Eles são opcionais: não crie uma análise entre edições sem uma
+solicitação explícita.
 
-* `cover-complete.png`: capa pronta, usada no PDF e no EPUB;
-* `cover-background.png`: fundo da página de título do PDF;
-* `cover-banner.png`: imagem horizontal exibida no HTML.
+=== 3. Configure as capas
+
+Mantenha as imagens em `modules/ROOT/assets/images/` e associe-as ao produto em
+`publication.yml`:
+
+[source,yaml]
+----
+publications:
+  book:
+    covers:
+      complete: cover-complete.png
+      background: cover-background.png
+      banner: cover-banner.png
+----
+
+`complete` é a capa pronta usada no PDF e no EPUB; `background` compõe a folha
+de rosto digital; e `banner` aparece no HTML. Atributos definidos numa edição
+podem substituir essas imagens quando as edições tiverem capas diferentes.
+Os três nomes sem sufixo são o padrão para um repositório com uma única família
+de capas. Quando houver publicações ou linhagens com capas diferentes, use
+`cover-complete-<mnemônico>.png`, `cover-background-<mnemônico>.png` e
+`cover-banner-<mnemônico>.png`, declarando os nomes exatos nos metadados. Omita
+a capa completa ou o banner quando o produto não deva usar uma imagem.
 
 === 4. Preserve a infraestrutura
 

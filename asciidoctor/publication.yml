@@ -1,8 +1,14 @@
-author: Quem sou eu?
-isbn: ''
-
-editions:
-  main:
-    title: 'Publicação: Genérica'
-    slug: nome-do-arquivo-gerado
-    lang: pt-BR
+publications:
+  book:
+    author: Quem sou eu?
+    isbn: ''
+    contents: contents.adoc
+    covers:
+      complete: cover-complete.png
+      background: cover-background.png
+      banner: cover-banner.png
+    editions:
+      main:
+        title: 'Publicação: Genérica'
+        slug: nome-do-arquivo-gerado
+        lang: pt-BR

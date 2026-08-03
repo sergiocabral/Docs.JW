@@ -16,15 +16,152 @@ Priorize conteúdo, caminhos previsíveis e pouca infraestrutura. Leia `README.a
 - `modules/ROOT/pages/index.adoc`: apresentação da publicação.
 - `modules/ROOT/assets/`: recursos compartilhados e capas.
 - `modules/<módulo>/nav.adoc`: navegação Antora da edição.
+- `modules/ROOT/nav*.adoc`: grupos de navegação agregada, quando essa topologia
+  for necessária.
 - `antora.yml`: componente, página inicial e módulos de navegação.
 - `antora-playbook.yml`: execução local do site.
 - `asciidoctor/publication.yml`: autor, identificador, títulos, slugs, idiomas e edições.
-- `asciidoctor/contents.adoc`: ordem do HTML, PDF e EPUB.
+- `asciidoctor/contents.adoc` e os arquivos de conteúdo declarados em
+  `publication.yml`: ordem do HTML, PDF e EPUB de cada produto.
 - `asciidoctor/support/attributes/common.adoc`: atributos compartilhados.
 - `asciidoctor/support/attributes/<idioma>.adoc`: traduções dos rótulos do Asciidoctor.
 - `asciidoctor/support/publication.adoc` e `asciidoctor/support/themes/`: infraestrutura comum das publicações.
 
 Não coloque identidade editorial no `Rakefile`, em `package.json` ou em `asciidoctor/support`.
+
+## Terminologia das Testemunhas de Jeová
+
+Todo conteúdo deste repositório está no contexto editorial das Testemunhas de
+Jeová. Trate `jw.org` e a Biblioteca On-line da Torre de Vigia como referências
+primárias para nomes, expressões e jargões oficiais no idioma de destino.
+
+- Preserve os termos usados pela própria publicação; não os substitua por
+  sinônimos religiosos genéricos.
+- Ao traduzir, procure o equivalente oficial usado pelas Testemunhas de Jeová
+  no idioma de destino, em vez de fazer uma tradução apenas literal.
+- Considere sempre a data da edição: a terminologia atual não substitui
+  automaticamente a terminologia histórica. Quando possível, consulte fontes
+  JW do mesmo período.
+- Não modernize silenciosamente um texto antigo. Por exemplo, preserve _Torre
+  de Vigia_ numa edição que usa esse nome e _A Sentinela_ numa edição que usa o
+  nome posterior; não presuma uma data de mudança sem confirmá-la.
+
+## Ordem das publicações e variações
+
+Em repositórios JW, apresente publicações, edições, idiomas e outras variações
+da mais recente para a mais antiga. A pessoa deve encontrar primeiro o conteúdo
+mais atual. Ao acrescentar uma variação, insira-a na posição cronológica
+correta; não a acrescente automaticamente ao fim.
+
+Aplique a ordem decrescente de forma consistente em:
+
+- blocos de navegação de `antora.yml`;
+- listas e tabelas do `README.adoc`;
+- página inicial em `modules/ROOT/pages/index.adoc`;
+- entradas de metadados em `asciidoctor/publication.yml`;
+- qualquer seletor ou catálogo visível de variações.
+
+Produtos derivados que abrangem várias edições, como **Análise entre edições**,
+vêm depois das publicações-fonte. Dentro de uma análise longitudinal, porém,
+transições, linhas do tempo e cadeias de expressões continuam na ordem antiga
+→ recente, pois ali a cronologia faz parte do raciocínio.
+
+## Navegação em aplicativos agregadores
+
+O Antora entrega cada arquivo listado em `antora.yml` como uma árvore de
+navegação independente. Aplicativos agregadores podem acrescentar acima dela um
+nó próprio para identificar o componente. Se um único arquivo registrado tiver
+várias raízes visíveis, o agregador poderá criar também um agrupamento com o
+título do componente, produzindo um nível redundante como
+`componente → componente → publicações`.
+
+Para que a árvore possa ser incorporada diretamente pelo agregador:
+
+- cada `nav*.adoc` listado em `antora.yml` deve ter exatamente uma raiz visível;
+- quando houver vários grupos de primeiro nível, distribua-os entre arquivos
+  como `modules/ROOT/nav-<grupo>.adoc` e registre cada arquivo separadamente, na
+  ordem desejada;
+- não crie uma raiz guarda-chuva que apenas repita o título já exibido pelo
+  catálogo ou pelo nó da fonte no aplicativo agregador;
+- não registre ao mesmo tempo a navegação local de um módulo e uma navegação
+  agregada que reproduza a mesma árvore;
+- quando o repositório tiver apenas uma raiz, mantenha um único `nav.adoc`; não
+  crie arquivos adicionais sem necessidade.
+
+Antes de reorganizar a navegação, confirme a forma como o agregador monta o nó
+da fonte. O conteúdo concreto dos grupos e a quantidade de arquivos continuam
+pertencendo a cada repositório; a regra estrutural é uma raiz por arquivo
+registrado.
+
+## Títulos das edições
+
+Em `asciidoctor/publication.yml`, o campo `title` de cada edição JW deve ser
+autoexplicativo e terminar com o identificador editorial entre parênteses. Esse
+identificador combina o mnemônico, o código de idioma e a data mais exata da
+edição:
+
+```yaml
+od_T-2021-12:
+  title: Organizados para Fazer a Vontade de Jeová (od-T 2021-12)
+  label: 'od-T 2005, 2015, 2020, 2021-12'
+  mnemonic: od
+  language_code: T
+  edition_date: 2021-12
+```
+
+Use no título apenas `edition_date`, isto é, a data da própria edição. Não
+copie para o título a sequência histórica de datas da página editora; preserve
+essa sequência em `label` e no atributo `edition-label`. A regra se aplica às
+edições da publicação, não automaticamente a produtos derivados, como uma
+análise entre edições.
+
+## PDFs JW como fonte
+
+Antes de interpretar ou converter um PDF JW, leia integralmente
+[AGENTS-JW-PDF-EXTRACTION.md](AGENTS-JW-PDF-EXTRACTION.md). Esse arquivo é a
+fonte de verdade para diagnosticar fontes sem mapeamento Unicode, escolher
+entre Windows e WSL, reconstruir títulos e ordem de leitura, extrair imagens e
+validar a transcrição.
+
+Não aceite a extração textual de uma única ferramenta como conteúdo final.
+Mantenha as evidências temporárias em tmp/pdfs, compare texto e imagens com as
+páginas renderizadas e só depois leve os arquivos revisados para modules e
+modules/ROOT/assets.
+
+## Arquivos JWPUB como fonte
+
+Quando a fonte for um arquivo nativo `.jwpub` do JW Library, leia primeiro e
+por completo
+[AGENTS-JWPUB-EXTRACTION.md](AGENTS-JWPUB-EXTRACTION.md). Essa instrução
+explica como obter e verificar o **JWPUB Converter** mantido em
+`App.JwPubConverter`, executar a extração sem alterar a entrada e aprovar os
+relatórios de integridade. Use a aplicação existente; não replique neste
+repositório a lógica de contêiner, criptografia ou descompactação.
+
+Depois de validar a estrutura extraída, leia integralmente
+[AGENTS-JWPUB-IMPORT.md](AGENTS-JWPUB-IMPORT.md) antes de montar uma publicação.
+Esse arquivo define como reconstruir documentos, títulos, parágrafos, notas,
+links e mídias no modelo Antora/AsciiDoctor deste repositório. Trate
+`html-original/` como fonte semântica principal e os arquivos TXT como apoio de
+leitura e conferência, nunca como substitutos da estrutura editorial.
+
+Incorpore as imagens editoriais com seus textos alternativos, legendas,
+créditos e notas. Nenhum esquema privado `jwpub://` pode permanecer no conteúdo
+público. Execute esse fluxo somente quando o usuário pedir a importação;
+analisar uma estrutura JWPUB não autoriza criar o módulo correspondente.
+
+## Comparação entre edições
+
+Antes de criar ou atualizar uma análise longitudinal da mesma publicação, leia
+integralmente
+[AGENTS-EDITION-COMPARISON.md](AGENTS-EDITION-COMPARISON.md). Esse arquivo é a
+fonte de verdade para inventariar as edições, associar capítulos por tema,
+tratar renomeações, deslocamentos, divisões e fusões, alinhar mudanças por
+transição e gerar uma publicação comparativa independente.
+
+Execute esse procedimento somente quando o usuário solicitar explicitamente a
+análise. Não associe conteúdo apenas pelo número ou pelo caminho do capítulo e
+não apresente um diff bruto como relatório editorial.
 
 ## Criar outra publicação
 
@@ -90,17 +227,71 @@ No título AsciiDoc de um capítulo, escreva somente o título. Deixe número e 
 * xref:0100-capitulo-01-exemplo.adoc[Capítulo 1 - Um capítulo de exemplo]
 ```
 
-Sempre atualize `nav.adoc` e `asciidoctor/contents.adoc` ao adicionar, remover, renomear ou reordenar páginas.
+Sempre atualize os `nav*.adoc` afetados e o arquivo de conteúdo Asciidoctor
+correspondente ao produto ao adicionar, remover, renomear ou reordenar páginas.
+Quando houver mais de uma variação, mantenha a mais recente no topo das listas
+externas.
+
+## Citação da fonte
+
+Em páginas baseadas em publicações JW, declare a referência no atributo `source-citation` e apresente somente a citação editorial curta. Não exiba os rótulos “Fonte” ou “WOL” nem a URL bruta. Use `pág.` ou `págs.` conforme necessário e inclua a edição quando ela for indispensável para distinguir a origem, por exemplo `od págs. 213-222` e `od-T 2005 págs. 219-224`.
+
+Quando houver uma página correspondente na Biblioteca On-line da Torre de
+Vigia, use como destino a URL completa conferida para aquela publicação, edição
+e língua. Os segmentos de localidade, biblioteca e idioma não são universais e
+não devem ser copiados automaticamente de uma publicação em português para
+outra língua. Exemplo de uma URL confirmada para português do Brasil:
+
+```adoc
+:wol-source-url: https://wol.jw.org/pt/wol/d/r5/lp-t/1102014931
+:source-citation: od cap. 1 págs. 6-11
+
+[.source-reference]
+{wol-source-url}[{source-citation}]
+```
+
+Quando não houver uma URL confiável para a edição, apresente a mesma estrutura como rótulo sem link:
+
+```adoc
+:source-citation: od-T 2005 págs. 5-9
+
+[.source-reference]
+[.source-label]#{source-citation}#
+```
+
+Prefira o link sempre que a correspondência com a WOL for segura. Preserve
+exatamente as roles `source-reference` e `source-label` esperadas pela interface
+agregadora e não use HTML ou passthrough para reproduzir a apresentação.
 
 ## Recursos e capas
 
-Compartilhe imagens entre edições por meio de `modules/ROOT/assets/images/`. Use nomes slug em ASCII e valide as referências no Antora.
+Compartilhe imagens entre edições por meio de `modules/ROOT/assets/images/`.
+Use nomes slug em ASCII e valide as referências no Antora.
 
-Preserve a função destes arquivos:
+Quando o repositório tiver uma única família de capas, preserve os nomes padrão:
 
 - `cover-complete.png`: capa pronta do PDF e do EPUB;
 - `cover-background.png`: página de título do PDF;
 - `cover-banner.png`: apresentação inicial do HTML.
+
+Quando o mesmo repositório reunir publicações ou linhagens com capas diferentes,
+acrescente o mnemônico a toda a família, mantendo as três funções alinhadas:
+
+- `cover-complete-<mnemônico>.png`;
+- `cover-background-<mnemônico>.png`;
+- `cover-banner-<mnemônico>.png`.
+
+Não imponha o sufixo a um repositório com uma única capa e não fixe no código o
+mnemônico de uma publicação específica. Declare a família padrão em `covers` no
+`publication.yml`; quando edições do mesmo produto precisarem de famílias
+diferentes, substitua os atributos `cover-complete-image`,
+`cover-background-image` e `cover-banner-image` na edição correspondente.
+
+Para a publicação derivada **Análise entre edições**, siga também
+`AGENTS-EDITION-COMPARISON.md`: não use uma imagem de capa completa. O PDF deve
+começar pela folha de rosto gerada, com o fundo compartilhado e texto digital.
+A infraestrutura deve aceitar capas opcionais sem alterar o uso normal das três
+capas nas edições do livro.
 
 Não inclua páginas artificiais de capa ou sumário em `contents.adoc`; os conversores geram esses elementos.
 
@@ -126,10 +317,17 @@ bundle exec rake
 Confirme:
 
 - ausência de referências ou inclusões quebradas;
+- exatamente uma raiz visível em cada arquivo de navegação registrado no
+  `antora.yml` quando o componente for consumido pelo agregador;
 - HTML, PDF e EPUB para todas as edições;
-- ordem definida em `contents.adoc`;
+- variações em ordem decrescente nas navegações e catálogos;
+- títulos de edição identificados por mnemônico, código de idioma e data;
+- ordem definida no arquivo de conteúdo de cada produto;
 - rótulos no idioma selecionado;
-- três capas aplicadas aos destinos esperados;
+- capas aplicadas aos destinos esperados, respeitando a exceção documentada da
+  análise entre edições;
+- quando a fonte for JWPUB, relatórios do conversor aprovados, avisos revisados,
+  mídias reconciliadas e ausência de `jwpub://` no produto público;
 - somente mudanças intencionais no `git status`.
 
 ## Releases
